@@ -1,5 +1,6 @@
 -- was running into a problem where I couldn't source into this file
 -- !!MAKE SURE YOU DO -> SOURCE db/schema.sql 
+-- was running into some error when running the schema + seed, Manan from BCS helped me run through and figure out that my 'ON DELETE CASCADE' was creating some errors. Told me that it probably wasn't needed on this assignment, so we ended up commenting those out 
 
 DROP DATABASE IF EXISTS employeetracker_db;
 CREATE DATABASE employeetracker_db;
@@ -18,9 +19,9 @@ CREATE TABLE role (
     salary DECIMAL NOT NULL,
     department_id INT NOT NULL, 
     -- activity 19
-    FOREIGN KEY (id) -- this is from the table role
+    FOREIGN KEY (department_id) -- this is from the table role
     REFERENCES department(id) -- this if from department table id
-    ON DELETE SET NULL 
+    -- ON DELETE CASCADE -- tells the parent the child is now modified, not needed in this assignment 
 );
 
 CREATE TABLE employee (
@@ -28,14 +29,14 @@ CREATE TABLE employee (
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     role_id INT NOT NULL,
-    manager_id INT NOT NULL,
+    manager_id INT, -- cannot be not null because of 1st employee
     
     FOREIGN KEY (role_id)
-    REFERENCES role(id)
-    ON DELETE CASCADE, 
+    REFERENCES role(id),
+    -- ON DELETE CASCADE, 
 
     FOREIGN KEY (manager_id)
     REFERENCES employee(id)
-    ON DELETE SET NULL, 
+    -- ON DELETE CASCADE
 );
 

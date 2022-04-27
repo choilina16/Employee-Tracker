@@ -1,6 +1,7 @@
+// I have a bunch of personal notes in this hw...pretty much I'm studying while I do this...hence all the comments :) 
+
 // this is needed for the prompts in the command line 
 const inquirer = require('inquirer');
-const fs = require('fs');
 // importing in the mysql2 library
 const mysql = require('mysql2');
 
@@ -73,10 +74,11 @@ const init = () =>  {
 // function to view employees on the command line 
 // using activity 21 as a reference for to create this function
 function viewEmployees () {
-    db.query('SELECT * FROM employee'), function (err, res) {
-        // console.log(res);
-        console.table(res);
-    }; 
+    db.query('SELECT * FROM employee', function (err, results) {
+        // console.log(results); //this will show up like usual
+        console.table(results); // using console.table puts all data inside of a table -> https://developer.mozilla.org/en-US/docs/Web/API/console/table
+        init(); // need this to bring up the main choices again
+    }); 
 };
 
 // function to add employees on the command line 
@@ -105,12 +107,17 @@ function addEmployee () {
                 message: 'Type in the manager id if applicable',
             },
         ]).then((res) => {
-            // https://www.w3schools.com/mysql/mysql_insert.asp -> used this website to INSERT in the new data from the user prompts
+            console.log(res);
             // pretty much the same as activity 21 for the DELETE but with the INSERT 
-            // using temperate literals for the VALUES 
-            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (${res.firstName}, ${res.lastName}, ${res.roleID}, ${res.managerId})`, function (err, res) {
+            db.query('INSERT INTO employee SET ?', {
+                first_name: res.firstName, 
+                last_name: res.lastName, 
+                role_id: res.roleId, 
+                manager_id: res.managerId
+            }, function (err, res) {
                 console.table(res);
-                viewAllRoles();
+                viewEmployees();
+                init();
             });
         });
 };
@@ -127,10 +134,11 @@ function updateEmployeeRole () {
 // function to view all roles on the command line 
 // activity 21
 function viewAllRoles () {
-    db.query('SELECT * FROM role'), function (err, res) {
+    db.query('SELECT * FROM role', function (err, res) {
         // console.log(res);
         console.table(res);
-    }; 
+        init();
+    }); 
 };
 
 // function to add roles on the command line 
@@ -153,9 +161,14 @@ function addRole () {
                 message: 'Type in corresponding department id',
             },
         ]).then((res) => {
-            db.query(`INSERT INTO role (title, salary, department_id) VALUES (${res.title}, ${res.salary}, ${res.departmentID})`, function (err, res) {
+            db.query('INSERT INTO role SET ?', {
+                title: res.title, 
+                salary: res.salary, 
+                department_id: res.departmentId, 
+            }, function (err, res) {
                 console.table(res);
                 viewAllRoles();
+                init();
             });
         })
 
@@ -164,10 +177,11 @@ function addRole () {
 // function to view all departments on the command line 
 // activity 21
 function viewAllDepartments () {
-    db.query('SELECT * FROM department'), function (err, res) {
+    db.query('SELECT * FROM department', function (err, res) {
         // console.log(res);
         console.table(res);
-    }; 
+        init();
+    }); 
 };
 
 // function to add departments on the command line 
@@ -181,9 +195,12 @@ function addDepartment () {
             }
         ])
         .then((res) => {
-            db.query(`INSERT INTO department (department_name) VALUES (${res.department})`, function (err, res) {
+            db.query('INSERT INTO department SET ?', {
+                department_name: res.department,
+            }, function (err, res) {
                 console.table(res);
                 viewAllDepartments();
+                init();
             });
         });
 };
