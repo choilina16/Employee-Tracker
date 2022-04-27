@@ -1,5 +1,7 @@
+// this is needed for the prompts in the command line 
 const inquirer = require('inquirer');
 const fs = require('fs');
+// importing in the mysql2 library
 const mysql = require('mysql2');
 
 // https://www.sitepoint.com/using-node-mysql-javascript-client/
@@ -14,10 +16,11 @@ const db = mysql.createConnection(
       password: '',
       database: 'employeetracker_db'
     },
-    console.log(`Connected to the employeetracker_db database.`)
-  );
+    console.log(`Connected to the employeetracker_db database!`)
+);
 
-function init() {
+// initial prompt that the user will run into when running node index.js
+const init = () =>  {
     inquirer
         .prompt([
             {
@@ -32,15 +35,17 @@ function init() {
                     'Add Role',
                     'View All Departments',
                     'Add Department'
-                ]
+                ],
             },
         ])
         .then(res => {
-            let choice = res.choice;
+            // Using the switch case to make the code more efficient & clean instead of using a bunch of if statements 
+            // https://www.youtube.com/watch?v=xDY1TTM9sGs&ab_channel=TechWithTim --> used this youtube video to help me understand the logic
+            let choice = res.choice; // passing in the response that the user selects into the switch case 
             switch (choice) {
-                case 'View All Employees':
-                    viewEmployees();
-                    break;
+                case 'View All Employees': // if case if equal to 'view all employees'
+                    viewEmployees(); // then this function will execute 
+                    break; // moving onto next case
                 case 'Add Employee':
                     addEmployee();
                     break;
@@ -56,41 +61,131 @@ function init() {
                 case 'View All Departments':
                     viewAllDepartments();
                     break;
+                case 'Add Department':
+                    addDepartment();
+                    break;
+                case 'QUIT':
+                    process.exit(); // this is ued to exit from a node.js program 
             }
         });
 }
 
 // function to view employees on the command line 
+// using activity 21 as a reference for to create this function
 function viewEmployees () {
-    db.query
+    db.query('SELECT * FROM employee'), function (err, res) {
+        // console.log(res);
+        console.table(res);
+    }; 
 };
 
 // function to add employees on the command line 
+// using my previous hw (Professional-README-Generator) as a reference to make these prompts https://github.com/choilina16/Professional-README-Generator/blob/main/index.js ^^
 function addEmployee () {
-
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'firstName',
+                message: 'First name of new employee',
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: 'Last name of new employee',
+            },
+            {
+                type: 'input',
+                name: 'roleId',
+                message: 'Type in corresponding role id',
+            },
+            {
+                type: 'input',
+                name: 'managerId',
+                message: 'Type in the manager id if applicable',
+            },
+        ]).then((res) => {
+            // https://www.w3schools.com/mysql/mysql_insert.asp -> used this website to INSERT in the new data from the user prompts
+            // pretty much the same as activity 21 for the DELETE but with the INSERT 
+            // using temperate literals for the VALUES 
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (${res.firstName}, ${res.lastName}, ${res.roleID}, ${res.managerId})`, function (err, res) {
+                console.table(res);
+                viewAllRoles();
+            });
+        });
 };
 
 // function to update employees' role on the command line 
 function updateEmployeeRole () {
+    inquirer 
+        .prompt([
+
+        ])
 
 };
 
 // function to view all roles on the command line 
+// activity 21
 function viewAllRoles () {
-
+    db.query('SELECT * FROM role'), function (err, res) {
+        // console.log(res);
+        console.table(res);
+    }; 
 };
 
 // function to add roles on the command line 
 function addRole () {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'title',
+                message: 'New role title?',
+            },
+            {
+                type: 'input',
+                name: 'salary',
+                message: 'New role salary?',
+            },
+            {
+                type: 'input',
+                name: 'departmentId',
+                message: 'Type in corresponding department id',
+            },
+        ]).then((res) => {
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES (${res.title}, ${res.salary}, ${res.departmentID})`, function (err, res) {
+                console.table(res);
+                viewAllRoles();
+            });
+        })
 
 };
 
 // function to view all departments on the command line 
+// activity 21
 function viewAllDepartments () {
-
+    db.query('SELECT * FROM department'), function (err, res) {
+        // console.log(res);
+        console.table(res);
+    }; 
 };
 
-
-
+// function to add departments on the command line 
+function addDepartment () {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'department',
+                message: 'Department name?',
+            }
+        ])
+        .then((res) => {
+            db.query(`INSERT INTO department (department_name) VALUES (${res.department})`, function (err, res) {
+                console.table(res);
+                viewAllDepartments();
+            });
+        });
+};
 
 init();
