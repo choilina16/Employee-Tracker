@@ -1,4 +1,5 @@
 // I have a bunch of personal notes in this hw...pretty much I'm studying while I do this...hence all the comments :) 
+// Heroku has also been down for many days now, my instructor told us to use heroku CLI. hopefully i did it right ! ^^
 
 // this is needed for the prompts in the command line 
 const inquirer = require('inquirer');
