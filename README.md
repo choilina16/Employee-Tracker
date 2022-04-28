@@ -5,6 +5,7 @@
 App used to help companies keep track of their employees
 
 ## Visuals
+https://user-images.githubusercontent.com/100983245/165665910-e5f2914e-ccaa-4dd9-b4ba-ae3e845c2a60.mp4
 
 ## Table of Contents
 1. [Objective](#objective)
