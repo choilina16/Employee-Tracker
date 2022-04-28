@@ -117,7 +117,7 @@ function addEmployee () {
             }, function (err, res) {
                 console.table(res);
                 viewEmployees();
-                init();
+                // init(); // removing these functions because it was duplicating!!
             });
         });
 };
@@ -126,6 +126,9 @@ function addEmployee () {
 function updateEmployeeRole () {
     inquirer 
         .prompt([
+            {
+
+            }
 
         ])
 
@@ -168,7 +171,7 @@ function addRole () {
             }, function (err, res) {
                 console.table(res);
                 viewAllRoles();
-                init();
+                // init();
             });
         })
 
@@ -200,7 +203,7 @@ function addDepartment () {
             }, function (err, res) {
                 console.table(res);
                 viewAllDepartments();
-                init();
+                // init();
             });
         });
 };
